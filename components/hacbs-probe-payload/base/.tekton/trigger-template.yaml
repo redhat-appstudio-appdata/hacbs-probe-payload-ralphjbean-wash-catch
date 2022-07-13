@@ -1,0 +1,50 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  creationTimestamp: null
+  name: hacbs-probe-payload
+  namespace: ralphjbean
+spec:
+  params:
+  - name: git-revision
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      annotations:
+        build.appstudio.openshift.io/application: hacbs-probe-payload
+        build.appstudio.openshift.io/build: "true"
+        build.appstudio.openshift.io/component: hacbs-probe-payload
+        build.appstudio.openshift.io/type: build
+        build.appstudio.openshift.io/version: "0.1"
+        pipelines.appstudio.openshift.io/type: build
+      creationTimestamp: null
+      generateName: hacbs-probe-payload-
+      labels:
+        build.appstudio.openshift.io/application: hacbs-probe-payload
+        build.appstudio.openshift.io/build: "true"
+        build.appstudio.openshift.io/component: hacbs-probe-payload
+        build.appstudio.openshift.io/type: build
+        build.appstudio.openshift.io/version: "0.1"
+        pipelines.appstudio.openshift.io/type: build
+      namespace: ralphjbean
+    spec:
+      params:
+      - name: git-url
+        value: https://github.com/ralphbean/hacbs-probe-payload
+      - name: output-image
+        value: quay.io/redhat-appstudio/user-workload:ralphjbean-hacbs-probe-payload-$(tt.params.git-revision)
+      - name: dockerfile
+        value: docker/Dockerfile
+      - name: path-context
+        value: .
+      pipelineRef:
+        bundle: quay.io/redhat-appstudio/build-templates-bundle:ad4c34b71d468a991450b0091cd96765471ed82d
+        name: docker-build
+      workspaces:
+      - name: workspace
+        persistentVolumeClaim:
+          claimName: appstudio
+        subPath: hacbs-probe-payload/$(tt.params.git-revision)
+    status: {}
+status: {}

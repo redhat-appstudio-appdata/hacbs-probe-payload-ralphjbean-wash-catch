@@ -1,0 +1,26 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  annotations:
+    build.appstudio.openshift.io/application: hacbs-probe-payload
+    build.appstudio.openshift.io/build: "true"
+    build.appstudio.openshift.io/component: hacbs-probe-payload
+    build.appstudio.openshift.io/type: build
+    build.appstudio.openshift.io/version: "0.1"
+    pipelines.appstudio.openshift.io/type: build
+  creationTimestamp: null
+  name: hacbs-probe-payload
+  namespace: ralphjbean
+spec:
+  namespaceSelector: {}
+  resources: {}
+  serviceAccountName: pipeline
+  triggers:
+  - bindings:
+    - kind: ClusterTriggerBinding
+      ref: github-push
+    template:
+      ref: hacbs-probe-payload
+status:
+  configuration:
+    generatedName: ""
